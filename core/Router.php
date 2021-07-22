@@ -4,9 +4,10 @@ namespace app\core;
 
 class Router {
 
+    protected array $routes = [];
     public Request $request;
     public Response $response;
-    protected array $routes = [];
+    
 
     public function __construct(Request $request, Response $response){
         $this->request = $request;
@@ -37,7 +38,7 @@ class Router {
         }
 
         if(is_array($callback)){
-            // Controller  + Action
+            // Controller
             Application::$app->controller = new $callback[0];
             $callback[0] = Application::$app->controller;
             //$controller->action = $callback[1];

@@ -4,11 +4,11 @@ namespace app\core;
 
 class Request {
 
-    public function getMethod() {
+    public function getMethod(): string {
         return strtolower($_SERVER['REQUEST_METHOD']);
     }
 
-    public function getPath(){
+    public function getPath(): string {
         $path = $_SERVER['REQUEST_URI'] ?? '/';
         $position = strpos($path, '?');
 
@@ -18,29 +18,26 @@ class Request {
         return $path;
     }
 
-    public function isGet(){
+    public function isGet(): bool {
         return $this->getMethod() === 'get';
     }
 
-    public function isPost(){
+    public function isPost(): bool {
         return $this->getMethod() === 'post';
     }
 
-    public function getBody() {
-        $body = [];
-
-        if($this->getMethod()=== 'get') {
+    public function getData(): array {
+        $data = [];
+        if($this->isGet()) {
             foreach ($_GET as $key => $value){
-                $body[$key] = filter_input(INPUT_GET, $key, FILTER_SANITIZE_SPECIAL_CHARS);
+                $data[$key] = filter_input(INPUT_GET, $key, FILTER_SANITIZE_SPECIAL_CHARS);
             }
         }
-
-        if($this->getMethod()=== 'post') {
+        if($this->isPost()) {
             foreach ($_POST as $key => $value){
-                $body[$key] = filter_input(INPUT_POST, $key, FILTER_SANITIZE_SPECIAL_CHARS);
+                $data[$key] = filter_input(INPUT_POST, $key, FILTER_SANITIZE_SPECIAL_CHARS);
             }
         }
-
-        return $body;
+        return $data;
     }
 }
