@@ -1,0 +1,15 @@
+{
+    "name": "prabeg/phpmvc-framework",
+    "autoload": {
+        "psr-4": {
+            "app\\": "./"
+        }
+    },
+    "authors": [
+        {
+            "name": "Prabeg Shakya",
+            "email": "shakyaprabeg@gmail.com"
+        }
+    ],
+    "require": {}
+}
