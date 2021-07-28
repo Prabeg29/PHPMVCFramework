@@ -30,25 +30,34 @@ class Router {
             $this->response->setStatusCode(404);
             return $this->view("_404");
         }
-        if(is_string($callback)){
+        if(is_string($callback)){ // View File
             return $this->view($callback);
         }
-        return call_user_func($callback);
+        if(is_array($callback)){ // Controller File
+            Application::$app->controller = new $callback[0];
+            $callback[0] = Application::$app->controller;
+        }
+        return call_user_func($callback, $this->request);
     }
 
     public function view($view, $params = []){
         $layoutContent = $this->layoutContent();
-        $viewContent =  $this->viewContent($view);
+        $viewContent =  $this->viewContent($view, $params);
         return str_replace('{{content}}', $viewContent, $layoutContent);
     }
 
     public function layoutContent() {
+        $layout = Application::$app->controller->layout;
         ob_start();
-        include_once Application::$APP_ROOT."/Views/Layouts/main.php";
+        include_once Application::$APP_ROOT."/Views/Layouts/$layout.php";
         return ob_get_clean();
     }
 
-    public function viewContent($view) {
+    public function viewContent($view, $params) {
+        foreach($params as $key => $value){
+            $$key = $value;
+        }
+
         ob_start();
         include_once Application::$APP_ROOT."/Views/$view.php";
         return ob_get_clean();
