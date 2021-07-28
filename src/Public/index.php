@@ -7,9 +7,8 @@ use app\Core\Router;
 
 require_once APP_ROOT.'/vendor/autoload.php';
 
-Router::get('/', function(){
-    echo 'Home Page';
-});
+Router::get('/', 'home');
+Router::get('/contact', 'contact');
 
-$app = new Application();
+$app = new Application(dirname(__DIR__));
 $app->run();
