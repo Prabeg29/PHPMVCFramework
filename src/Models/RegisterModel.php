@@ -11,10 +11,6 @@ class RegisterModel extends Model{
     public string $password = '';
     public string $confirmPassword = '';
 
-    public function register() {
-        echo "Creating new user";
-    }
-
     public function validationRules(): array {
         return [
             'firstName' => [
@@ -79,5 +75,9 @@ class RegisterModel extends Model{
                 ]
             ]
         ];
+    }
+
+    public function register() {
+        echo "Creating new user";
     }
 }
