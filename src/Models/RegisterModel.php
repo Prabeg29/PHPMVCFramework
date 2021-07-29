@@ -5,11 +5,11 @@ namespace app\Models;
 use app\Core\Model;
 
 class RegisterModel extends Model{
-    public string $firstName;
-    public string $lastName;
-    public string $email;
-    public string $password;
-    public string $confirmPassword;
+    public string $firstName = '';
+    public string $lastName = '';
+    public string $email = '';
+    public string $password = '';
+    public string $confirmPassword = '';
 
     public function register() {
         echo "Creating new user";
@@ -24,7 +24,8 @@ class RegisterModel extends Model{
                     'min'=>1
                 ], 
                 [
-                    self::RULE_MAX, 'min'=>255
+                    self::RULE_MAX,
+                    'max'=>255
                 ]
             ],
             'lastName' => [
@@ -35,7 +36,7 @@ class RegisterModel extends Model{
                 ],
                 [
                     self::RULE_MAX,
-                    'min'=>255
+                    'max'=>255
                 ]
             ],
             'email' => [
@@ -47,7 +48,7 @@ class RegisterModel extends Model{
                 ], 
                 [
                     self::RULE_MAX, 
-                    'min'=>255
+                    'max'=>255
                 ], 
                 self::RULE_UNIQUE
             ],
@@ -59,10 +60,10 @@ class RegisterModel extends Model{
                 ],
                 [
                     self::RULE_MAX,
-                    'min'=>16
+                    'max'=>16
                 ]
             ],
-            'confrimPassword' => [
+            'confirmPassword' => [
                 self::RULE_REQUIRED,
                 [
                     self::RULE_MIN,
@@ -70,7 +71,7 @@ class RegisterModel extends Model{
                 ],
                 [
                     self::RULE_MAX,
-                    'min'=>16
+                    'max'=>16
                 ],
                 [
                     self::RULE_MATCH, 

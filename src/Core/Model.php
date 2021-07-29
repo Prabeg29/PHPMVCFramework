@@ -70,4 +70,13 @@ abstract class Model {
             self::RULE_UNIQUE => 'Record with with this {field} already exists',
         ];
     }
+
+    public function hasError($attribute){
+        return $this->errors[$attribute] ?? false;
+    }
+
+    public function getFirstError($attribute){
+        $errors = $this->errors[$attribute] ?? [];
+        return $errors[0] ?? '';
+    }
 }
