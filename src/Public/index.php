@@ -8,6 +8,8 @@ use app\Controllers\SiteController;
 use app\Controllers\AuthController;
 
 require_once APP_ROOT.'/vendor/autoload.php';
+$dotenv = Dotenv\Dotenv::createImmutable(dirname(__DIR__));
+$dotenv->load();
 
 Router::get('/', [SiteController::class, 'home']);
 Router::get('/contact', [SiteController::class, 'contact']);
@@ -18,5 +20,13 @@ Router::post('/contact', [SiteController::class, 'handleContact']);
 Router::post('/login', [AuthController::class, 'login']);
 Router::post('/register', [AuthController::class, 'register']);
 
-$app = new Application(dirname(__DIR__));
+$config = [
+    'db' => [
+        'dsn'=> $_ENV['DB_DSN'],
+        'username'=> $_ENV['DB_USERNAME'],
+        'password'=> $_ENV['DB_PASSWORD'],
+    ]
+];
+
+$app = new Application(dirname(__DIR__), $config);
 $app->run();
