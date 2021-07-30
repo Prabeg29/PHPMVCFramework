@@ -20,4 +20,58 @@ class Database {
             echo $e->getMessage();
         }
     }
+
+    public function applyMigrations() {
+        $this->createMigrationsTable();
+        $localMigrations = $this->getLocalMigrations();
+
+        $newMigrations = [];
+
+        $allMigrations = scandir(Application::$APP_ROOT.'/Migrations');
+        $toApplyMigrations = array_diff($allMigrations, $localMigrations);
+        foreach($toApplyMigrations as $migration) {
+            if($migration === "." || $migration === ".."){
+                continue;
+            }
+            require_once Application::$APP_ROOT.'/Migrations/'.$migration;
+            $migrationClass = pathinfo($migration, PATHINFO_FILENAME);
+            $migrationInstance = new $migrationClass();
+            $this->log("Applying Migration $migration");
+            $migrationInstance->up();
+            $this->log("Applied Migration $migration");
+
+            $newMigrations[] = $migration;
+        }
+        if(!empty($newMigrations)) {
+            $this->saveMigrationsToLocalDatabase($newMigrations);
+        }
+        else {
+            $this->log("All Migrations are applied");
+        }
+    }
+
+    public function createMigrationsTable() {
+        $this->pdo->exec("CREATE TABLE IF NOT EXISTS migrations (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            migration VARCHAR(255),
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )  ENGINE=INNODB;");
+    }
+
+    public function getLocalMigrations() {
+        $statement = $this->pdo->prepare("SELECT migration FROM migrations");
+        $statement->execute();
+
+        return $statement->fetchAll(PDO::FETCH_COLUMN);
+    }
+
+    public function saveMigrationsToLocalDatabase(array $migrations) {
+        $str = implode(",", array_map(fn($m) => "('$m')", $migrations));
+        $statement = $this->pdo->prepare("INSERT INTO migrations (migration) VALUES $str");
+        $statement->execute();
+    }
+
+    protected function log($message) {
+        echo '['.date('Y-m-d H:i:s').'] - ' . $message . PHP_EOL;
+    }
 }
