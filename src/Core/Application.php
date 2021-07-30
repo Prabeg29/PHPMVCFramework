@@ -4,7 +4,7 @@ namespace app\Core;
 
 class Application {
 
-    public static string $APP_ROOT;
+    public static string $SRC;
     public Router $router;
     public Request $request;
     public Response $response;
@@ -12,9 +12,9 @@ class Application {
     public static Application $app;
     public Controller $controller;
 
-    public function __construct($appRoot, array $config)
+    public function __construct($src, array $config)
     {
-        self::$APP_ROOT = $appRoot;
+        self::$SRC = $src;
         self::$app = $this;
         $this->request = new Request();
         $this->response = new Response();

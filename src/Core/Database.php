@@ -23,27 +23,28 @@ class Database {
 
     public function applyMigrations() {
         $this->createMigrationsTable();
+
+        $allMigrations = scandir(Application::$SRC.'/Migrations');
         $localMigrations = $this->getLocalMigrations();
-
-        $newMigrations = [];
-
-        $allMigrations = scandir(Application::$APP_ROOT.'/Migrations');
         $toApplyMigrations = array_diff($allMigrations, $localMigrations);
+        $toSaveMigrations = [];
+
         foreach($toApplyMigrations as $migration) {
             if($migration === "." || $migration === ".."){
                 continue;
             }
-            require_once Application::$APP_ROOT.'/Migrations/'.$migration;
-            $migrationClass = pathinfo($migration, PATHINFO_FILENAME);
-            $migrationInstance = new $migrationClass();
+            require_once Application::$SRC.'/Migrations/'. $migration;
+
+            $migrationClassName = pathinfo($migration, PATHINFO_FILENAME);
+            $migrationInstance = new $migrationClassName();
             $this->log("Applying Migration $migration");
             $migrationInstance->up();
             $this->log("Applied Migration $migration");
 
-            $newMigrations[] = $migration;
+            $toSaveMigrations[] = $migration;
         }
-        if(!empty($newMigrations)) {
-            $this->saveMigrationsToLocalDatabase($newMigrations);
+        if(!empty($toSaveMigrations)) {
+            $this->saveMigrationsToLocalDatabase($toSaveMigrations);
         }
         else {
             $this->log("All Migrations are applied");

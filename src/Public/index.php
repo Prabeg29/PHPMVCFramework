@@ -1,6 +1,7 @@
 <?php
 
 define('APP_ROOT', dirname(dirname(__DIR__)));
+define('SRC', (dirname(__DIR__)));
 
 use app\Core\Router;
 use app\Core\Application;
@@ -28,5 +29,5 @@ $config = [
     ]
 ];
 
-$app = new Application(dirname(__DIR__), $config);
+$app = new Application(SRC, $config);
 $app->run();
