@@ -49,7 +49,7 @@ class Router {
     public function layoutContent() {
         $layout = Application::$app->controller->layout;
         ob_start();
-        include_once Application::$APP_ROOT."/Views/Layouts/$layout.php";
+        include_once Application::$SRC."/Views/Layouts/$layout.php";
         return ob_get_clean();
     }
 
@@ -59,7 +59,7 @@ class Router {
         }
 
         ob_start();
-        include_once Application::$APP_ROOT."/Views/$view.php";
+        include_once Application::$SRC."/Views/$view.php";
         return ob_get_clean();
     }
 }
