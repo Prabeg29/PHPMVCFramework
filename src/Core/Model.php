@@ -10,7 +10,7 @@ abstract class Model {
     public const RULE_MAX = 'max';
     public const RULE_MATCH = 'match';
     public const RULE_UNIQUE = 'unique';
-
+    
     public array $errors = [];
 
     public function loadData(array $data) {
@@ -47,6 +47,19 @@ abstract class Model {
                 if($ruleName === self::RULE_MATCH && $value !== $this->{$rule['match']}) {
                     $this->addError($attribute, self::RULE_MATCH, $rule);
                 }
+                if($ruleName === self::RULE_UNIQUE) {
+                    $className = $rule['class'];
+                    $uniqueAttribute = $rule['attribute'] ?? $attribute;
+                    $tableName = $className::tableName();
+
+                    $statement = Application::$app->db->prepare("SELECT * FROM $tableName WHERE $uniqueAttribute = :$uniqueAttribute");
+                    $statement->bindValue(":$uniqueAttribute", $value);
+                    $statement->execute();
+
+                    if($statement->fetchObject()) {
+                        $this->addError($attribute, self::RULE_UNIQUE, ['field'=> $attribute]);
+                    }
+                }
             }
         }
         return empty($this->errors);
@@ -79,4 +92,5 @@ abstract class Model {
         $errors = $this->errors[$attribute] ?? [];
         return $errors[0] ?? '';
     }
+    
 }

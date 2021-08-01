@@ -5,11 +5,16 @@ namespace app\Models;
 use app\Core\DbModel;
 
 class User extends DbModel{
+    public const STATUS_INACTIVE = 0;
+    public const STATUS_ACTIVE = 1;
+    public const STATUS_DELETED = 2;
+
     public string $firstName = '';
     public string $lastName = '';
     public string $email = '';
     public string $password = '';
     public string $confirmPassword = '';
+    public int $status = self::STATUS_INACTIVE;
 
     public function validationRules(): array {
         return [
@@ -46,7 +51,10 @@ class User extends DbModel{
                     self::RULE_MAX, 
                     'max'=>255
                 ], 
-                self::RULE_UNIQUE
+                [
+                    self::RULE_UNIQUE,
+                    'class' => self::class
+                ]
             ],
             'password' => [
                 self::RULE_REQUIRED,
@@ -86,11 +94,14 @@ class User extends DbModel{
             'firstName',
             'lastName',
             'email',
-            'password'
+            'password',
+            'status'
         ];
     }
 
-    public function register() {
-        return $this->save();
+    public function save() {
+        $this->status = self::STATUS_ACTIVE;
+        $this->password = password_hash($this->password, PASSWORD_DEFAULT);
+        return parent::save();
     }
 }

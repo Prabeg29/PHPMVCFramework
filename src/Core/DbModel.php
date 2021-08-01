@@ -12,7 +12,7 @@ abstract class DbModel extends Model {
         $tableName = $this->tableName();
         $columns = $this->columns();
         $params = array_map(fn($col)=>":$col", $columns);
-        $statement = self::prepare("INSERT INTO $tableName (".implode(',', $columns).") VALUES (".implode(',', $params).")");
+        $statement = Application::$app->db->prepare("INSERT INTO $tableName (".implode(',', $columns).") VALUES (".implode(',', $params).")");
 
         foreach($columns as $column) {
             $statement->bindValue(":$column", $this->{$column});
@@ -23,9 +23,5 @@ abstract class DbModel extends Model {
         catch(PDOException $e) {
             echo $e->getMessage();
         }
-    }
-
-    public static function prepare($sql) {
-        return Application::$app->db->pdo->prepare($sql);
     }
 } 
