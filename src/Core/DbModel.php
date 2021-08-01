@@ -18,7 +18,7 @@ abstract class DbModel extends Model {
             $statement->bindValue(":$column", $this->{$column});
         }
         try{
-            $statement->execute();
+            return $statement->execute();
         }
         catch(PDOException $e) {
             echo $e->getMessage();
