@@ -16,12 +16,14 @@ Router::get('/', [SiteController::class, 'home']);
 Router::get('/contact', [SiteController::class, 'contact']);
 Router::get('/login', [AuthController::class, 'login']);
 Router::get('/register', [AuthController::class, 'register']);
+Router::get('/logout', [AuthController::class, 'logout']);
 
 Router::post('/contact', [SiteController::class, 'handleContact']);
 Router::post('/login', [AuthController::class, 'login']);
 Router::post('/register', [AuthController::class, 'register']);
 
 $config = [
+    'className' => \app\Models\User::class,
     'db' => [
         'dsn'=> $_ENV['DB_DSN'],
         'username'=> $_ENV['DB_USERNAME'],

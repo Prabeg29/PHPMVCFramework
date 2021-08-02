@@ -5,8 +5,9 @@ namespace app\Core;
 use PDOException;
 
 abstract class DbModel extends Model {
-    abstract public function tableName(): string;
+    abstract public static function tableName(): string;
     abstract public function columns(): array;
+    abstract public function primaryKey(): string;
 
     public function save() {
         $tableName = $this->tableName();
@@ -19,6 +20,23 @@ abstract class DbModel extends Model {
         }
         try{
             return $statement->execute();
+        }
+        catch(PDOException $e) {
+            echo $e->getMessage();
+        }
+    }
+
+    public static function findOne($value) {
+        $tableName = static::tableName();
+        $attributes = array_keys($value);
+        $sql = implode("AND", array_map(fn($attr) => "$attr = :$attr", $attributes));
+        $statement = Application::$app->db->prepare("SELECT * FROM $tableName WHERE $sql");
+        foreach ($value as $key => $item) {
+            $statement->bindValue(":$key", $item);
+        }
+        try{
+            $statement->execute();
+            return $statement->fetchObject(static::class);
         }
         catch(PDOException $e) {
             echo $e->getMessage();
