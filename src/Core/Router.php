@@ -2,6 +2,8 @@
 
 namespace app\Core;
 
+use app\Core\Exceptions\NotFoundException;
+
 class Router {
     private static array $routes = [];
     public Request $request;
@@ -27,39 +29,24 @@ class Router {
         $callback = self::$routes[$method][$url] ?? false;
 
         if(!$callback){
-            $this->response->setStatusCode(404);
-            return $this->view("_404");
+            throw new NotFoundException();
         }
         if(is_string($callback)){ // View File
-            return $this->view($callback);
+            return Application::$app->view->view($callback);
         }
-        if(is_array($callback)){ // Controller File
-            Application::$app->controller = new $callback[0];
-            $callback[0] = Application::$app->controller;
+        if(is_array($callback)){
+            /* *
+             * @var \app\Core|Controller $controller
+             */
+            $controller = new $callback[0]();
+            Application::$app->controller = $controller;
+            $controller->action = $callback[1];
+            $callback[0] = $controller;
+
+            foreach($controller->getMiddlewares() as $middleware){
+                $middleware->execute();
+            }
         }
         return call_user_func($callback, $this->request, $this->response);
-    }
-
-    public function view($view, $params = []){
-        $layoutContent = $this->layoutContent();
-        $viewContent =  $this->viewContent($view, $params);
-        return str_replace('{{content}}', $viewContent, $layoutContent);
-    }
-
-    public function layoutContent() {
-        $layout = Application::$app->controller->layout;
-        ob_start();
-        include_once Application::$SRC."/Views/Layouts/$layout.php";
-        return ob_get_clean();
-    }
-
-    public function viewContent($view, $params) {
-        foreach($params as $key => $value){
-            $$key = $value;
-        }
-
-        ob_start();
-        include_once Application::$SRC."/Views/$view.php";
-        return ob_get_clean();
     }
 }

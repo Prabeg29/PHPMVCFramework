@@ -12,7 +12,7 @@ use app\Core\Application;
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
-    <title>Hello, world!</title>
+    <title><?php echo $this->title; ?></title>
   </head>
   <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -37,6 +37,9 @@ use app\Core\Application;
                             <a class="nav-link" href="/register">Register</a>
                         </li>
                     <?php else: ?>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/profile">Profile</a>
+                        </li>
                         <li class="nav-item">
                             <a class="nav-link" href="/logout">Welcome <?php echo Application::$app->user->getDisplayName()?> (Logout)</a>
                         </li>

@@ -1,9 +1,13 @@
 <?php
   use \app\Core\Form\Form;
 
-  /* 
+  /*
    * @var $model \app\models\LoginForm
    */
+  /*
+   * @var $this app\Core|View
+   */
+    $this->title = 'Login';
 ?>
 
 <h1>Login</h1>

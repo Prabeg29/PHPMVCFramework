@@ -1,17 +1,20 @@
-<h1>Contact Us</h1>
+<?php
+  /* *
+  * @var $this app\Core|View
+  */
+  $this->title = 'Contact';
+  use \app\Core\Form\Form;
+  use app\Core\Form\TextAreaField;
 
-<form action="" method="post">
-  <div class="mb-3">
-    <label>Subject</label>
-    <input type="text" name="subject" class="form-control">
-  </div>
-  <div class="mb-3">
-    <label>Email</label>
-    <input type="text" name="email" class="form-control">
-  </div>
-  <div class="mb-3">
-    <label>Body</label>
-    <textarea name="body" class="form-control"></textarea>
-  </div>
+  /*
+   * @var $model \app\models\ContactForm
+   */
+?>
+
+<h1>Contact</h1>
+<?php $form = Form::begin("", "post");?>
+  <?php echo $form->field($model, 'subject');?>
+  <?php echo $form->field($model, 'email')->fieldEmail();?>
+  <?php echo new TextAreaField($model, 'body');?>
   <button type="submit" class="btn btn-primary">Submit</button>
-</form>
+<?php Form::end();?>

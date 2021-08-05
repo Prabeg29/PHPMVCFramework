@@ -1,9 +1,10 @@
 <?php
 
-namespace app\Core;
+namespace app\Core\DB;
 
 use PDO;
 use PDOException;
+use app\Core\Application;
 
 class Database {
     public PDO $pdo;

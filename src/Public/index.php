@@ -17,8 +17,9 @@ Router::get('/contact', [SiteController::class, 'contact']);
 Router::get('/login', [AuthController::class, 'login']);
 Router::get('/register', [AuthController::class, 'register']);
 Router::get('/logout', [AuthController::class, 'logout']);
+Router::get('/profile', [AuthController::class, 'profile']);
 
-Router::post('/contact', [SiteController::class, 'handleContact']);
+Router::post('/contact', [SiteController::class, 'contact']);
 Router::post('/login', [AuthController::class, 'login']);
 Router::post('/register', [AuthController::class, 'register']);
 

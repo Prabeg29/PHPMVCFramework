@@ -2,7 +2,7 @@
 
 namespace app\Models;
 
-use app\Core\UserModel;
+use app\Core\DB\UserModel;
 
 class User extends UserModel{
     public const STATUS_INACTIVE = 0;

@@ -2,7 +2,9 @@
 
 namespace app\Core;
 
+use Exception;
 use app\Models\User;
+use app\Core\DB\Database;
 
 class Application {
 
@@ -15,8 +17,9 @@ class Application {
     public Response $response;
     public Database $db;
     public Session $session;
-    public Controller $controller;
+    public ?Controller $controller = null;
     public ?User $user = null;
+    public string $layout = 'main';
 
     public function __construct($src, array $config)
     {
@@ -27,6 +30,7 @@ class Application {
         $this->request = new Request();
         $this->response = new Response();
         $this->router = new Router($this->request, $this->response);
+        $this->view = new View();
         $this->session = new Session();
         $this->className = $config['className'];
 
@@ -38,7 +42,13 @@ class Application {
     }
 
     public function run(){
-        echo $this->router->resolve();
+        try{
+            echo $this->router->resolve();
+        }
+        catch(Exception $e){
+            $this->response->setStatusCode($e->getCode());
+            echo $this->view->view('_error', ['exception'=> $e]);;
+        }
     }
 
     public function getController() {
